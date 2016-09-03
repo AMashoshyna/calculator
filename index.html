@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Calculator</title>
+	<script src="js/basicComputation.js" defer></script>
+	<script src="js/inputFromButtons.js" defer></script>
+	<script src="js/inputFromKeyboard.js" defer></script>
+	<script src="js/display.js" defer></script>
+	<script src="js/calcController.js" defer></script>
+	<script src="js/app.js" defer></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<div id="calculator">
+	<table>
+	<th colspan="6">
+		<input type="text" name="inputField" class="inputField" value="0" data-component='inputField'>
+
+	</th>
+	</table>
+	<table data-component='keyboard'>
+	<tr>
+		<td><button>MC</button></td>
+		<td><button>MR</button></td>
+		<td><button>MS</button></td>
+		<td><button>M+</button></td>
+		<td><button>M-</button></td>
+	</tr>
+		<tr>
+		<td><button data-element='actionButton'>&#x2190;</button></td>
+		<td><button data-element='actionButton'>CE</button></td>
+		<td><button data-element='actionButton'>C</button></td>
+		<td><button data-element='actionButton'>&plusmn</button></td>
+		<td><button data-element='actionButton'>&#x221a</button></td>
+	</tr>	
+	<tr>
+		<td><button data-element='numberButton' data-number='7'>7</button></td>
+		<td><button data-element='numberButton' data-number='8'>8</button></td>
+		<td><button data-element='numberButton' data-number='9'>9</button></td>
+		<td><button data-element='actionButton' data-operation='division'>/</button></td>
+		<td><button data-element='actionButton'>%</button></td>
+	</tr>
+		
+	<tr>
+		<td><button data-element='numberButton' data-number='4'>4</button></td>
+		<td><button data-element='numberButton' data-number='5'>5</button></td>
+		<td><button data-element='numberButton' data-number='6'>6</button></td>
+		<td><button data-element='actionButton' data-operation='multiplication'>*</button></td>
+		<td><button data-element='actionButton'>1/x</button></td>
+	</tr>
+	<tr>
+		<td><button data-element='numberButton' data-number='1'>1</button></td>
+		<td><button data-element='numberButton' data-number='2'>2</button></td>
+		<td><button data-element='numberButton' data-number='3'>3</button></td>
+		<td><button data-element='actionButton' data-operation='deduction'>-</button></td>
+		<td rowspan="2"><button data-element='actionButton'>=</button></td>
+	</tr>
+	<tr>
+		<td colspan="2"><button data-element='numberButton' data-number='0'>0</button></td>
+		<td><button data-element='numberButton' data-number=','>,</button></td>
+		<td><button data-element='actionButton' data-operation='addition'>+</button></td>
+	</tr>
+	</table>
+</div>
+
+</body>
+</html>
