@@ -1,16 +1,13 @@
 'use strict'
 
-let register = {
-		operandA: null,
-		operandB: null,
-		operation: null
-	}
 
 class CalcController {
 	constructor(options) {
 		this._el = options.element;
 
-		this._computation = new BasicComputation();
+		this._computation = new BasicComputation({
+			element: document.getElementById('calculator')
+		});
 
 		this._inputFromButtons = new InputFromButtons({
 			element: this._el.querySelector("[data-component='keyboard']")
@@ -22,66 +19,17 @@ class CalcController {
 		});
 
 		this._display = new Display({
-			element: this._el.querySelector('[data-component="inputField"]')
+			element: this._el.querySelector('[data-component="output-field"]')
 
 		});
+		this._inputFromButtons.getElement().addEventListener("newValueInput", 
+			this._computation.handleNewInput.bind(this));
 
-		this._inputFromButtons.getElement().addEventListener('newValueInputBegin', this._newValueHandler.bind(this));
-		this._inputFromButtons.getElement().addEventListener('actionInput', this._newActionHandler.bind(this));
-		this._inputFromButtons.getElement().addEventListener('returnButtonPressed', this._showResult.bind(this));
-
-	}
-
-	
-
-
-	_newValueHandler(value) {
-		this._inputFromButtons.recordNewValue(event);
-
-	};
-
-_newActionHandler(event){
-//check the register
-	if(!register.operandA){
-		return
-
-	} else if(register.operandA&&!register.operandB) {
-		register.operation = event.target.dataset.operation;
-
-	} else if(register.operandA&&register.operandB) {
-		register.operandA = this._computation.compute(register);
-		register.operandB = null;
-		register.operation = event.target.dataset.operation;
+		this._computation.getElement().addEventListener("outputUpdate",
+			this._display.displayOutput.bind(this._display));
 
 	}
 
-}
-
-
-// _recordNewValue(event){
-// 	var newValue = [];
-// 	newValue.push(event.detail);
-
-// 	this._el.addEventListener('click', function inputHandler(event) {
-// 		if(event.target.closest('[data-element="numberButton"]')){
-// 			newValue.push(event.target.dataset.number); 
-// 		} else {
-// 			this._el.removeEventListener('click', inputHandler)
-// 			newValue = parseFloat(newValue.join());
-// 			console.log(newValue);
-// 			return newValue;
-// 		}
-// 	})
-// }
-
-_recordNewAction(){
-
-
-}
-
-_showResult(){
-
-}
 
 
 }

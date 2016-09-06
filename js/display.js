@@ -6,4 +6,10 @@ class Display {
 
 
 	}
+
+	displayOutput(value){
+		output = value.detail;
+		this._el.innerHTML = output;
+
+	}
 }
