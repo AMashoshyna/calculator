@@ -25,7 +25,7 @@ class BasicComputation {
 		if(operation == "=") {
 			return operations[register.operation](parseFloat(operandA), parseFloat(operandB),operation)
 		};
-		return operations[operation](parseFloat(operandA), parseFloat(operandB),operation);
+		return operations[operation](parseFloat(operandA.join("")), parseFloat(operandB.join("")),operation);
 	};
 
 	getElement() {
@@ -72,7 +72,9 @@ class BasicComputation {
 					register.operation = value;
 					}
 				}
-				register.operation = value;
+				if(value!="="){
+					register.operation = value;
+				};
 			} else {
 				register.operandA = [];
 				register.operandB = [];
