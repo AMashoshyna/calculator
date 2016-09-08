@@ -1,9 +1,32 @@
+
+h1 {
+	text-align: center;
+	color: blue;
+	font-family: 'Cookie', cursive;
+
+}
+
+#calculator {
+	margin: auto;
+	width: 100%;
+	font-family: 'Cookie', cursive;
+}
+
 table {
 	border: solid black 1px;
+	margin: auto;
+	/*width: 100%;*/
 }
 
 div[name="output-field"] {
 	bodrer: 1px solid black;
-	width: 193px;
+	padding: 5px;
+	width: 183px;
+	text-align: right;
+	font-size: 1.5em;
 }
 
+button {
+	width: 100%;
+	background-color: #D7EAF9
+}

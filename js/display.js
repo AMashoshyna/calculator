@@ -8,8 +8,10 @@ class Display {
 	}
 
 	displayOutput(value){
-		output = value.detail;
+		let output = value.detail;
 		this._el.innerHTML = output;
 
 	}
-}
+};
+
+module.exports = Display; 

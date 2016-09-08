@@ -1,5 +1,10 @@
 'use strict'
 
+const BasicComputation = require('./basicComputation.js');
+const InputFromButtons = require('./inputFromButtons.js');
+const InputFromKeyboard = require('./inputFromKeyboard.js');
+const Display = require('./display.js');
+
 
 class CalcController {
 	constructor(options) {
@@ -25,11 +30,18 @@ class CalcController {
 		this._inputFromButtons.getElement().addEventListener("newValueInput", 
 			this._computation.handleNewInput.bind(this));
 
+
 		this._computation.getElement().addEventListener("outputUpdate",
 			this._display.displayOutput.bind(this._display));
+
+		this._inputFromButtons.getElement().addEventListener("reset", 
+			this._computation.reset.bind(this));
+
 
 	}
 
 
 
-}
+};
+
+module.exports = CalcController; 

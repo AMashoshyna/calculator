@@ -6,4 +6,6 @@ class InputFromKeyboard {
 
 
 	}
-}
+};
+
+module.exports = InputFromKeyboard; 

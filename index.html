@@ -2,15 +2,18 @@
 <html>
 <head>
 	<title>Calculator</title>
-	<script src="js/basicComputation.js" defer></script>
+	<script src="build.js" defer></script>
+	<!-- <script src="js/basicComputation.js" defer></script>
 	<script src="js/inputFromButtons.js" defer></script>
 	<script src="js/inputFromKeyboard.js" defer></script>
 	<script src="js/display.js" defer></script>
 	<script src="js/calcController.js" defer></script>
-	<script src="js/app.js" defer></script>
+	<script src="js/app.js" defer></script> -->
 	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"> 
 </head>
 <body>
+<h1>My Little Calculator</h1>
 <div id="calculator">
 	<table>
 	<th colspan="6">
@@ -29,7 +32,7 @@
 	</tr>
 		<tr>
 		<td><button data-element='numberButton'>&#x2190;</button></td>
-		<td><button data-element='numberButton'>CE</button></td>
+		<td><button data-element="resetButton" data-operation='reset'>CE</button></td>
 		<td><button data-element='numberButton'>C</button></td>
 		<td><button data-element='numberButton'>&plusmn</button></td>
 		<td><button data-element='numberButton'>&#x221a</button></td>
@@ -58,11 +61,12 @@
 	</tr>
 	<tr>
 		<td colspan="2"><button data-element='numberButton' data-number='0' style="width:100%">0</button></td>
-		<td><button data-element='numberButton' data-number=','>,</button></td>
+		<td><button data-element='numberButton' data-number='.'>,</button></td>
 		<td><button data-element='numberButton' data-operation='+'>+</button></td>
 	</tr>
 	</table>
 </div>
+<img src="./img/pinkie_pie.png">
 
 </body>
 </html>
