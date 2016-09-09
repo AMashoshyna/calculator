@@ -4,7 +4,9 @@ let register = {
 	operandA: [],
 	operandB: [],
 	operation: null
-}
+};
+
+let memoryRegister = 0;
 
 
 let operations = {
@@ -12,6 +14,29 @@ let operations = {
 	"-": function(a, b) {return a - b},
 	"*": function(a, b) {return a * b},
 	"/": function(a, b) {return a / b},
+};
+
+let memoryHandlers ={
+	"memory-clear": function(){
+		memoryRegister = 0;
+	},
+	"memory-store": function(){
+	//value check needed;
+		memoryRegister = output;
+	},
+	"memory-recall": function(){
+		output = memoryRegister;
+		this._outputUpdateEvent(output);
+		return output;
+	},
+	"memory-add": function(){
+		memoryRegister += output;
+	},
+	"memory-subtract": function(){
+		memoryRegister =  memoryRegister - output;
+
+	},
+
 }
 
 let output;
@@ -19,6 +44,7 @@ let output;
 class BasicComputation {
 	constructor(options) {
 		this._el = options.element;
+		this._maxRegisterLength = options.maxRegisterLength;
 	};
 
 	_compute(operandA, operandB, operation) {
@@ -32,40 +58,42 @@ class BasicComputation {
 		return this._el;
 	}
 
+
 	handleNewInput(value){
 
 		value = value.detail;
 		if( !isNaN(parseFloat(value)) || value ==="."){
-			if(register.operandA.length > 0 && register.operation) {
+			if(register.operandA.length > 0 
+				&& register.operandB.length < this._maxRegisterLength
+				&& register.operation) 
+			{
 				register.operandB.push(value);
 				output = parseFloat(register.operandB.join(""));
 				console.log("operand B "+ register.operandB);
-				this._computation._outputUpdateEvent(output);
+				this._outputUpdateEvent(output);
 			} else {
+				if(register.operandA.length < this._maxRegisterLength) {
+
 				register.operandA.push(value);
 				output = parseFloat(register.operandA.join(""));
 				console.log("operand A "+ register.operandA);
-				this._computation._outputUpdateEvent(output);
+				this._outputUpdateEvent(output);
+				}
 			}
 			
 		} 
-		// else if(value == ",") {
-		// 	register.operandA.push(value);
-		// 	output = register.operandA.join("");
-		// 	this._computation._outputUpdateEvent(output);
-		// } 
 		else {
 			if(register.operandA.length ==0) return;
 			else if(operations.hasOwnProperty(value) || value =="=") {
 				if(register.operandB.length > 0){
-					var interimResult = this._computation._compute(register.operandA, register.operandB, register.operation)
+					var interimResult = this._compute(register.operandA, register.operandB, register.operation)
 					register.operandA = [];
 					register.operandB = [];
 					register.operandA.push(interimResult);
 					output = parseFloat(register.operandA.join(""));
 					console.log("operand A "+ register.operandA);
 					if(value=="=") {
-					this._computation._outputUpdateEvent(output);
+					this._outputUpdateEvent(output);
 						
 					} else {
 						
@@ -79,13 +107,13 @@ class BasicComputation {
 				register.operandA = [];
 				register.operandB = [];
 				register.operation = null;
-				this._computation._outputUpdateEvent("error");
+				this._outputUpdateEvent("error");
 
 			}
 
 		}
 		
-	}
+	};
 
 	reset(){
 		register.operandA = [];
@@ -99,6 +127,11 @@ class BasicComputation {
 	}
 
 	_outputUpdateEvent(output) {
+		if (output.toString().length>this._maxRegisterLength)
+		{
+			output = output.toExponential();
+		}
+
 		var event = new CustomEvent("outputUpdate", {
 			detail: output
 		});

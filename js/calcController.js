@@ -11,7 +11,8 @@ class CalcController {
 		this._el = options.element;
 
 		this._computation = new BasicComputation({
-			element: document.getElementById('calculator')
+			element: document.getElementById('calculator'),
+			maxRegisterLength: 15
 		});
 
 		this._inputFromButtons = new InputFromButtons({
@@ -28,7 +29,7 @@ class CalcController {
 
 		});
 		this._inputFromButtons.getElement().addEventListener("newValueInput", 
-			this._computation.handleNewInput.bind(this));
+			this._computation.handleNewInput.bind(this._computation));
 
 
 		this._computation.getElement().addEventListener("outputUpdate",

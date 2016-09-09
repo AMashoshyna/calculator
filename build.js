@@ -72,7 +72,8 @@ var app =
 			this._el = options.element;
 	
 			this._computation = new BasicComputation({
-					element: document.getElementById('calculator')
+					element: document.getElementById('calculator'),
+					maxRegisterLength: 15
 			});
 	
 			this._inputFromButtons = new InputFromButtons({
@@ -86,7 +87,7 @@ var app =
 					element: this._el.querySelector('[data-component="output-field"]')
 	
 			});
-			this._inputFromButtons.getElement().addEventListener("newValueInput", this._computation.handleNewInput.bind(this));
+			this._inputFromButtons.getElement().addEventListener("newValueInput", this._computation.handleNewInput.bind(this._computation));
 	
 			this._computation.getElement().addEventListener("outputUpdate", this._display.displayOutput.bind(this._display));
 	
@@ -113,6 +114,8 @@ var app =
 		operation: null
 	};
 	
+	var memoryRegister = 0;
+	
 	var operations = {
 		"+": function _(a, b) {
 			return a + b;
@@ -128,6 +131,28 @@ var app =
 		}
 	};
 	
+	var memoryHandlers = {
+		"memory-clear": function memoryClear() {
+			memoryRegister = 0;
+		},
+		"memory-store": function memoryStore() {
+			//value check needed;
+			memoryRegister = output;
+		},
+		"memory-recall": function memoryRecall() {
+			output = memoryRegister;
+			this._outputUpdateEvent(output);
+			return output;
+		},
+		"memory-add": function memoryAdd() {
+			memoryRegister += output;
+		},
+		"memory-subtract": function memorySubtract() {
+			memoryRegister = memoryRegister - output;
+		}
+	
+	};
+	
 	var output = void 0;
 	
 	var BasicComputation = function () {
@@ -135,6 +160,7 @@ var app =
 			_classCallCheck(this, BasicComputation);
 	
 			this._el = options.element;
+			this._maxRegisterLength = options.maxRegisterLength;
 		}
 	
 		_createClass(BasicComputation, [{
@@ -156,49 +182,46 @@ var app =
 	
 				value = value.detail;
 				if (!isNaN(parseFloat(value)) || value === ".") {
-					if (register.operandA.length > 0 && register.operation) {
+					if (register.operandA.length > 0 && register.operandB.length < this._maxRegisterLength && register.operation) {
 						register.operandB.push(value);
 						output = parseFloat(register.operandB.join(""));
 						console.log("operand B " + register.operandB);
-						this._computation._outputUpdateEvent(output);
+						this._outputUpdateEvent(output);
 					} else {
-						register.operandA.push(value);
-						output = parseFloat(register.operandA.join(""));
-						console.log("operand A " + register.operandA);
-						this._computation._outputUpdateEvent(output);
-					}
-				}
-				// else if(value == ",") {
-				// 	register.operandA.push(value);
-				// 	output = register.operandA.join("");
-				// 	this._computation._outputUpdateEvent(output);
-				// } 
-				else {
-						if (register.operandA.length == 0) return;else if (operations.hasOwnProperty(value) || value == "=") {
-							if (register.operandB.length > 0) {
-								var interimResult = this._computation._compute(register.operandA, register.operandB, register.operation);
-								register.operandA = [];
-								register.operandB = [];
-								register.operandA.push(interimResult);
-								output = parseFloat(register.operandA.join(""));
-								console.log("operand A " + register.operandA);
-								if (value == "=") {
-									this._computation._outputUpdateEvent(output);
-								} else {
+						if (register.operandA.length < this._maxRegisterLength) {
 	
-									register.operation = value;
-								}
-							}
-							if (value != "=") {
-								register.operation = value;
-							};
-						} else {
-							register.operandA = [];
-							register.operandB = [];
-							register.operation = null;
-							this._computation._outputUpdateEvent("error");
+							register.operandA.push(value);
+							output = parseFloat(register.operandA.join(""));
+							console.log("operand A " + register.operandA);
+							this._outputUpdateEvent(output);
 						}
 					}
+				} else {
+					if (register.operandA.length == 0) return;else if (operations.hasOwnProperty(value) || value == "=") {
+						if (register.operandB.length > 0) {
+							var interimResult = this._compute(register.operandA, register.operandB, register.operation);
+							register.operandA = [];
+							register.operandB = [];
+							register.operandA.push(interimResult);
+							output = parseFloat(register.operandA.join(""));
+							console.log("operand A " + register.operandA);
+							if (value == "=") {
+								this._outputUpdateEvent(output);
+							} else {
+	
+								register.operation = value;
+							}
+						}
+						if (value != "=") {
+							register.operation = value;
+						};
+					} else {
+						register.operandA = [];
+						register.operandB = [];
+						register.operation = null;
+						this._outputUpdateEvent("error");
+					}
+				}
 			}
 		}, {
 			key: "reset",
@@ -214,6 +237,10 @@ var app =
 		}, {
 			key: "_outputUpdateEvent",
 			value: function _outputUpdateEvent(output) {
+				if (output.toString().length > this._maxRegisterLength) {
+					output = output.toExponential();
+				}
+	
 				var event = new CustomEvent("outputUpdate", {
 					detail: output
 				});
