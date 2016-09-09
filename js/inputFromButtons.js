@@ -3,7 +3,7 @@
 class InputFromButtons {
 	constructor(options){
 		this._el = options.element;
-		let inputButtons = this._el.querySelectorAll('[data-element="numberButton"]');
+		let inputButtons = this._el.querySelectorAll('[data-element="inputButton"]');
 
 		for(var i=0; i < inputButtons.length; i++) {
 			inputButtons[i].addEventListener('click', this._provideNewValue.bind(this));
@@ -21,7 +21,7 @@ class InputFromButtons {
 	_provideNewValue(e) {
 
 		let event = new CustomEvent('newValueInput', {
-			detail: e.target.dataset.number || e.target.dataset.operation
+			detail: e.target.dataset.number || e.target.dataset.operation || e.target.dataset.inputOperation
 		});
 		this._el.dispatchEvent(event);
 	};

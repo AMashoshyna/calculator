@@ -131,13 +131,15 @@ var app =
 		}
 	};
 	
-	var memoryHandlers = {
+	var memoryOperations = {
 		"memory-clear": function memoryClear() {
 			memoryRegister = 0;
+			console.log(memoryRegister);
 		},
 		"memory-store": function memoryStore() {
 			//value check needed;
 			memoryRegister = output;
+			console.log(memoryRegister);
 		},
 		"memory-recall": function memoryRecall() {
 			output = memoryRegister;
@@ -146,9 +148,11 @@ var app =
 		},
 		"memory-add": function memoryAdd() {
 			memoryRegister += output;
+			console.log(memoryRegister);
 		},
 		"memory-subtract": function memorySubtract() {
 			memoryRegister = memoryRegister - output;
+			console.log(memoryRegister);
 		}
 	
 	};
@@ -164,14 +168,6 @@ var app =
 		}
 	
 		_createClass(BasicComputation, [{
-			key: "_compute",
-			value: function _compute(operandA, operandB, operation) {
-				if (operation == "=") {
-					return operations[register.operation](parseFloat(operandA.join("")), parseFloat(operandB.join("")), operation);
-				};
-				return operations[operation](parseFloat(operandA.join("")), parseFloat(operandB.join("")), operation);
-			}
-		}, {
 			key: "getElement",
 			value: function getElement() {
 				return this._el;
@@ -182,45 +178,17 @@ var app =
 	
 				value = value.detail;
 				if (!isNaN(parseFloat(value)) || value === ".") {
-					if (register.operandA.length > 0 && register.operandB.length < this._maxRegisterLength && register.operation) {
-						register.operandB.push(value);
-						output = parseFloat(register.operandB.join(""));
-						console.log("operand B " + register.operandB);
-						this._outputUpdateEvent(output);
-					} else {
-						if (register.operandA.length < this._maxRegisterLength) {
+					this._numberHandler(value);
+				} else if (operations.hasOwnProperty(value) || value == "=") {
+					this._operationHandler(value);
+				} else if (memoryOperations.hasOwnProperty(value)) {
 	
-							register.operandA.push(value);
-							output = parseFloat(register.operandA.join(""));
-							console.log("operand A " + register.operandA);
-							this._outputUpdateEvent(output);
-						}
-					}
+					this._memoryHandler(value);
 				} else {
-					if (register.operandA.length == 0) return;else if (operations.hasOwnProperty(value) || value == "=") {
-						if (register.operandB.length > 0) {
-							var interimResult = this._compute(register.operandA, register.operandB, register.operation);
-							register.operandA = [];
-							register.operandB = [];
-							register.operandA.push(interimResult);
-							output = parseFloat(register.operandA.join(""));
-							console.log("operand A " + register.operandA);
-							if (value == "=") {
-								this._outputUpdateEvent(output);
-							} else {
-	
-								register.operation = value;
-							}
-						}
-						if (value != "=") {
-							register.operation = value;
-						};
-					} else {
-						register.operandA = [];
-						register.operandB = [];
-						register.operation = null;
-						this._outputUpdateEvent("error");
-					}
+					register.operandA = [];
+					register.operandB = [];
+					register.operation = null;
+					this._outputUpdateEvent("error");
 				}
 			}
 		}, {
@@ -233,6 +201,61 @@ var app =
 					detail: 0
 				});
 				this._el.dispatchEvent(event);
+			}
+		}, {
+			key: "_compute",
+			value: function _compute(operandA, operandB, operation) {
+				if (operation == "=") {
+					return operations[register.operation](parseFloat(operandA.join("")), parseFloat(operandB.join("")));
+				};
+				return operations[operation](parseFloat(operandA.join("")), parseFloat(operandB.join("")));
+			}
+		}, {
+			key: "_numberHandler",
+			value: function _numberHandler(value) {
+				if (register.operandA.length > 0 && register.operandB.length < this._maxRegisterLength && register.operation) {
+					register.operandB.push(value);
+					output = parseFloat(register.operandB.join(""));
+					console.log("operand B " + register.operandB);
+					this._outputUpdateEvent(output);
+				} else {
+					if (register.operandA.length < this._maxRegisterLength) {
+	
+						register.operandA.push(value);
+						output = parseFloat(register.operandA.join(""));
+						console.log("operand A " + register.operandA);
+						this._outputUpdateEvent(output);
+					}
+				}
+			}
+		}, {
+			key: "_operationHandler",
+			value: function _operationHandler(value) {
+				if (register.operandA.length == 0) return;
+	
+				if (register.operandB.length > 0) {
+					var interimResult = this._compute(register.operandA, register.operandB, register.operation);
+					register.operandA = [];
+					register.operandB = [];
+					register.operandA.push(interimResult);
+					output = parseFloat(register.operandA.join(""));
+					console.log("operand A " + register.operandA);
+					if (value == "=") {
+						this._outputUpdateEvent(output);
+					} else {
+	
+						register.operation = value;
+					}
+				}
+				if (value != "=") {
+					register.operation = value;
+				};
+			}
+		}, {
+			key: "_memoryHandler",
+			value: function _memoryHandler(value) {
+	
+				memoryOperations[value]();
 			}
 		}, {
 			key: "_outputUpdateEvent",
@@ -270,7 +293,7 @@ var app =
 			_classCallCheck(this, InputFromButtons);
 	
 			this._el = options.element;
-			var inputButtons = this._el.querySelectorAll('[data-element="numberButton"]');
+			var inputButtons = this._el.querySelectorAll('[data-element="inputButton"]');
 	
 			for (var i = 0; i < inputButtons.length; i++) {
 				inputButtons[i].addEventListener('click', this._provideNewValue.bind(this));
@@ -290,7 +313,7 @@ var app =
 			value: function _provideNewValue(e) {
 	
 				var event = new CustomEvent('newValueInput', {
-					detail: e.target.dataset.number || e.target.dataset.operation
+					detail: e.target.dataset.number || e.target.dataset.operation || e.target.dataset.inputOperation
 				});
 				this._el.dispatchEvent(event);
 			}
