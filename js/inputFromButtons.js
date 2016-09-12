@@ -3,14 +3,22 @@
 class InputFromButtons {
 	constructor(options){
 		this._el = options.element;
+
 		let inputButtons = this._el.querySelectorAll('[data-element="inputButton"]');
 
-		for(var i=0; i < inputButtons.length; i++) {
+		for (var i=0; i < inputButtons.length; i++) {
+
 			inputButtons[i].addEventListener('click', this._provideNewValue.bind(this));
 
-			let resetButton = this._el.querySelector('[data-element="resetButton"]');
-			resetButton.addEventListener('click', this._resetValue.bind(this));
 		};
+		
+
+		let resetButton = this._el.querySelectorAll('[data-element="resetButton"]');
+
+		for (var i=0; i < resetButton.length; i++) {
+
+			resetButton[i].addEventListener('click', this._resetValue.bind(this));
+		}
 
 	}
 

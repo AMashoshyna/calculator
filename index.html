@@ -3,70 +3,59 @@
 <head>
 	<title>Calculator</title>
 	<script src="build.js" defer></script>
-	<!-- <script src="js/basicComputation.js" defer></script>
-	<script src="js/inputFromButtons.js" defer></script>
-	<script src="js/inputFromKeyboard.js" defer></script>
-	<script src="js/display.js" defer></script>
-	<script src="js/calcController.js" defer></script>
-	<script src="js/app.js" defer></script> -->
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"> 
 </head>
 <body>
-<h1>My Little Calculator</h1>
-<div id="calculator">
-	<table>
-	<th colspan="6">
-		<!-- <input type="text" name="inputField" class="inputField" value="0" data-component='inputField'> -->
-		<div name="output-field" data-component='output-field'>0</div>
-
-	</th>
-	</table>
-	<table data-component='keyboard'>
-	<tr>
-		<td><button data-element='inputButton' data-input-operation='memory-clear'>MC</button></td>
-		<td><button data-element='inputButton' data-input-operation='memory-recall'>MR</button></td>
-		<td><button data-element='inputButton' data-input-operation='memory-store'>MS</button></td>
-		<td><button data-element='inputButton' data-input-operation='memory-add'>M+</button></td>
-		<td><button data-element='inputButton' data-input-operation='memory-subtract'>M-</button></td>
-	</tr>
-		<tr>
-		<td><button data-element='inputButton'>&#x2190;</button></td>
-		<td><button data-element='resetButton' data-operation='reset'>CE</button></td>
-		<td><button data-element='inputButton'>C</button></td>
-		<td><button data-element='inputButton'>&plusmn</button></td>
-		<td><button data-element='inputButton'>&#x221a</button></td>
-	</tr>	
-	<tr>
-		<td><button data-element='inputButton' data-number='7'>7</button></td>
-		<td><button data-element='inputButton' data-number='8'>8</button></td>
-		<td><button data-element='inputButton' data-number='9'>9</button></td>
-		<td><button data-element='inputButton' data-operation='/'>/</button></td>
-		<td><button data-element='inputButton'>%</button></td>
-	</tr>
+	<div id="calculator">
+		<table data-component='keyboard'>
+		<thead>
+				<th colspan="6"><div name="output-field" data-component='output-field'>0</div></th>
+		</thead>
 		
-	<tr>
-		<td><button data-element='inputButton' data-number='4'>4</button></td>
-		<td><button data-element='inputButton' data-number='5'>5</button></td>
-		<td><button data-element='inputButton' data-number='6'>6</button></td>
-		<td><button data-element='inputButton' data-operation='*'>*</button></td>
-		<td><button data-element='inputButton'>1/x</button></td>
-	</tr>
-	<tr>
-		<td><button data-element='inputButton' data-number='1'>1</button></td>
-		<td><button data-element='inputButton' data-number='2'>2</button></td>
-		<td><button data-element='inputButton' data-number='3'>3</button></td>
-		<td><button data-element='inputButton' data-operation='-'>-</button></td>
-		<td rowspan="2"><button data-element='inputButton' style="height:100%" data-operation='='>=</button></td>
-	</tr>
-	<tr>
-		<td colspan="2"><button data-element='inputButton' data-number='0' style="width:100%">0</button></td>
-		<td><button data-element='inputButton' data-number='.'>,</button></td>
-		<td><button data-element='inputButton' data-operation='+'>+</button></td>
-	</tr>
-	</table>
-</div>
-<img src="./img/pinkie_pie.png">
-
+			<tbody>
+				<tr>
+					<td><button data-element='inputButton' data-input-operation='memory-clear'>MC</button></td>
+					<td><button data-element='inputButton' data-input-operation='memory-recall'>MR</button></td>
+					<td><button data-element='inputButton' data-input-operation='memory-store'>MS</button></td>
+					<td><button data-element='inputButton' data-input-operation='memory-add'>M+</button></td>
+					<td><button data-element='inputButton' data-input-operation='memory-subtract'>M-</button></td>
+				</tr>
+				<tr>
+					<td><button data-element='inputButton' class='under-construction'>&#x2190;</button></td>
+					<td><button data-element='resetButton' data-operation='reset'>CE</button></td>
+					<td><button data-element='resetButton' data-operation='reset'>C</button></td>
+					<td><button data-element='inputButton' data-number='minus'>&plusmn</button></td>
+					<td><button data-element='inputButton' class='under-construction'>&#x221a</button></td>
+				</tr>	
+				<tr>
+					<td><button data-element='inputButton' data-number='7'>7</button></td>
+					<td><button data-element='inputButton' data-number='8'>8</button></td>
+					<td><button data-element='inputButton' data-number='9'>9</button></td>
+					<td><button data-element='inputButton' data-operation='/'>/</button></td>
+					<td><button data-element='inputButton' class='under-construction'>%</button></td>
+				</tr>
+				<tr>
+					<td><button data-element='inputButton' data-number='4'>4</button></td>
+					<td><button data-element='inputButton' data-number='5'>5</button></td>
+					<td><button data-element='inputButton' data-number='6'>6</button></td>
+					<td><button data-element='inputButton' data-operation='*'>*</button></td>
+					<td><button data-element='inputButton' class='under-construction'>1/x</button></td>
+				</tr>
+				<tr>
+					<td><button data-element='inputButton' data-number='1'>1</button></td>
+					<td><button data-element='inputButton' data-number='2'>2</button></td>
+					<td><button data-element='inputButton' data-number='3'>3</button></td>
+					<td><button data-element='inputButton' data-operation='-'>-</button></td>
+					<td rowspan="2"><button data-element='inputButton' style="height:100%" data-operation='='>=</button></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button data-element='inputButton' data-number='0' style="width:100%">0</button></td>
+					<td><button data-element='inputButton' data-number='.'>,</button></td>
+					<td><button data-element='inputButton' data-operation='+'>+</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

@@ -59,7 +59,28 @@ var app =
 
 	'use strict';
 	
+	//temporary tooltip for elements to be completed
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var wipButtons = document.getElementsByClassName('under-construction');
+	
+	var _loop = function _loop(i) {
+		wipButtons[i].onmouseover = function () {
+			wipButtons[i].style.position = "relative";
+			var tooltip = document.createElement('span');
+			tooltip.innerHTML = "under construction";
+			tooltip.style = '\n\t\twidth: 120px;\n\t\tbackground-color: grey;\n\t\topacity: 0.8;\n\t\tcolor: #fff;\n\t\ttext-align: center;\n\t\tborder-radius: 6px;\n\t\tpadding: 5px 0;\n\t\tposition: absolute;\n\t\tz-index: 1;\n\t\ttop: 20px;\n\t\tleft: 20px;\n\t\t';
+			wipButtons[i].appendChild(tooltip);
+			wipButtons[i].onmouseout = function () {
+				wipButtons[i].removeChild(wipButtons[i].firstElementChild);
+			};
+		};
+	};
+	
+	for (var i = 0; i < wipButtons.length; i++) {
+		_loop(i);
+	}
 	
 	var BasicComputation = __webpack_require__(2);
 	var InputFromButtons = __webpack_require__(3);
@@ -67,31 +88,34 @@ var app =
 	var Display = __webpack_require__(5);
 	
 	var CalcController = function CalcController(options) {
-			_classCallCheck(this, CalcController);
+		_classCallCheck(this, CalcController);
 	
-			this._el = options.element;
+		this._el = options.element;
 	
-			this._computation = new BasicComputation({
-					element: document.getElementById('calculator'),
-					maxRegisterLength: 15
-			});
+		this._computation = new BasicComputation({
+			element: document.getElementById('calculator'),
+			maxRegisterLength: 14
+		});
 	
-			this._inputFromButtons = new InputFromButtons({
-					element: this._el.querySelector("[data-component='keyboard']")
+		this._inputFromButtons = new InputFromButtons({
+			element: this._el.querySelector("[data-component='keyboard']")
 	
-			});
+		});
 	
-			this._inputFromKeyboard = new InputFromKeyboard({});
+		this._inputFromKeyboard = new InputFromKeyboard({
+			// module under construction
 	
-			this._display = new Display({
-					element: this._el.querySelector('[data-component="output-field"]')
+		});
 	
-			});
-			this._inputFromButtons.getElement().addEventListener("newValueInput", this._computation.handleNewInput.bind(this._computation));
+		this._display = new Display({
+			element: this._el.querySelector('[data-component="output-field"]')
 	
-			this._computation.getElement().addEventListener("outputUpdate", this._display.displayOutput.bind(this._display));
+		});
+		this._inputFromButtons.getElement().addEventListener("newValueInput", this._computation.handleNewInput.bind(this._computation));
 	
-			this._inputFromButtons.getElement().addEventListener("reset", this._computation.reset.bind(this));
+		this._computation.getElement().addEventListener("outputUpdate", this._display.displayOutput.bind(this._display));
+	
+		this._inputFromButtons.getElement().addEventListener("reset", this._computation.reset.bind(this));
 	};
 	
 	;
@@ -102,7 +126,7 @@ var app =
 /* 2 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
@@ -134,27 +158,29 @@ var app =
 	var memoryOperations = {
 		"memory-clear": function memoryClear() {
 			memoryRegister = 0;
-			console.log(memoryRegister);
+			console.log("memory register " + memoryRegister);
 		},
+	
 		"memory-store": function memoryStore() {
 			//value check needed;
 			memoryRegister = output;
-			console.log(memoryRegister);
+			console.log("memory register " + memoryRegister);
 		},
+	
 		"memory-recall": function memoryRecall() {
 			output = memoryRegister;
-			this._outputUpdateEvent(output);
-			return output;
+			console.log("memory register " + memoryRegister);
 		},
+	
 		"memory-add": function memoryAdd() {
 			memoryRegister += output;
-			console.log(memoryRegister);
+			console.log("memory register " + memoryRegister);
 		},
+	
 		"memory-subtract": function memorySubtract() {
 			memoryRegister = memoryRegister - output;
-			console.log(memoryRegister);
+			console.log("memory register " + memoryRegister);
 		}
-	
 	};
 	
 	var output = void 0;
@@ -177,9 +203,12 @@ var app =
 			value: function handleNewInput(value) {
 	
 				value = value.detail;
-				if (!isNaN(parseFloat(value)) || value === ".") {
+	
+				if (!isNaN(parseFloat(value)) || value === "." || value === "minus") {
+	
 					this._numberHandler(value);
-				} else if (operations.hasOwnProperty(value) || value == "=") {
+				} else if (operations.hasOwnProperty(value) || value === "=") {
+	
 					this._operationHandler(value);
 				} else if (memoryOperations.hasOwnProperty(value)) {
 	
@@ -213,20 +242,51 @@ var app =
 		}, {
 			key: "_numberHandler",
 			value: function _numberHandler(value) {
-				if (register.operandA.length > 0 && register.operandB.length < this._maxRegisterLength && register.operation) {
-					register.operandB.push(value);
-					output = parseFloat(register.operandB.join(""));
-					console.log("operand B " + register.operandB);
-					this._outputUpdateEvent(output);
+	
+				if (register.operation) {
+	
+					if (register.operandA.length > 0 && register.operandB.length < this._maxRegisterLength) {
+	
+						minus: if (value === "minus") {
+	
+							if (register.operandB[0] === "-") {
+	
+								register.operandB.shift();
+								break minus;
+							}
+	
+							register.operandB.splice(0, 0, "-");
+						} else {
+	
+							register.operandB.push(value);
+						}
+	
+						output = parseFloat(register.operandB.join(""));
+						console.log("operand B " + register.operandB);
+					} else return;
 				} else {
+	
 					if (register.operandA.length < this._maxRegisterLength) {
 	
-						register.operandA.push(value);
+						minus: if (value === "minus") {
+	
+							if (register.operandA[0] === "-") {
+	
+								register.operandA.shift();
+								break minus;
+							}
+	
+							register.operandA.splice(0, 0, "-");
+						} else {
+	
+							register.operandA.push(value);
+						}
+	
 						output = parseFloat(register.operandA.join(""));
 						console.log("operand A " + register.operandA);
-						this._outputUpdateEvent(output);
-					}
-				}
+					} else return;
+				};
+				this._outputUpdateEvent(output);
 			}
 		}, {
 			key: "_operationHandler",
@@ -234,20 +294,25 @@ var app =
 				if (register.operandA.length == 0) return;
 	
 				if (register.operandB.length > 0) {
+	
 					var interimResult = this._compute(register.operandA, register.operandB, register.operation);
+	
 					register.operandA = [];
 					register.operandB = [];
 					register.operandA.push(interimResult);
 					output = parseFloat(register.operandA.join(""));
 					console.log("operand A " + register.operandA);
-					if (value == "=") {
+	
+					if (value === "=") {
 						this._outputUpdateEvent(output);
 					} else {
 	
 						register.operation = value;
 					}
 				}
+	
 				if (value != "=") {
+	
 					register.operation = value;
 				};
 			}
@@ -255,12 +320,31 @@ var app =
 			key: "_memoryHandler",
 			value: function _memoryHandler(value) {
 	
-				memoryOperations[value]();
+				if (value !== "memory-recall") {
+					memoryOperations[value]();
+				} else {
+					this._memoryRecall();
+				}
+			}
+		}, {
+			key: "_memoryRecall",
+			value: function _memoryRecall() {
+				if (register.operandA.length > 0 && register.operation) {
+					register.operandB.push(memoryRegister);
+					console.log("operand B " + register.operandB);
+				} else {
+					register.operandA.push(memoryRegister);
+					console.log("operand A " + register.operandA);
+				}
+				output = memoryRegister;
+				this._outputUpdateEvent(output);
 			}
 		}, {
 			key: "_outputUpdateEvent",
 			value: function _outputUpdateEvent(output) {
+	
 				if (output.toString().length > this._maxRegisterLength) {
+	
 					output = output.toExponential();
 				}
 	
@@ -293,14 +377,20 @@ var app =
 			_classCallCheck(this, InputFromButtons);
 	
 			this._el = options.element;
+	
 			var inputButtons = this._el.querySelectorAll('[data-element="inputButton"]');
 	
 			for (var i = 0; i < inputButtons.length; i++) {
-				inputButtons[i].addEventListener('click', this._provideNewValue.bind(this));
 	
-				var resetButton = this._el.querySelector('[data-element="resetButton"]');
-				resetButton.addEventListener('click', this._resetValue.bind(this));
+				inputButtons[i].addEventListener('click', this._provideNewValue.bind(this));
 			};
+	
+			var resetButton = this._el.querySelectorAll('[data-element="resetButton"]');
+	
+			for (var i = 0; i < resetButton.length; i++) {
+	
+				resetButton[i].addEventListener('click', this._resetValue.bind(this));
+			}
 		}
 	
 		_createClass(InputFromButtons, [{
@@ -344,6 +434,7 @@ var app =
 		_classCallCheck(this, InputFromKeyboard);
 	
 		this._el = options.element;
+		// to be completed
 	};
 	
 	;
